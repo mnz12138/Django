@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <button type="button" onclick="window.location.href = '/';">返回</button>
+    <form action="http://127.0.0.1:8000/addBlog" onsubmit="return onSubmitAction()" id="blogform" method="POST">
+        {% csrf_token %}
+        <input id="title" type="text" name="title" placeholder="标题" value="{{title}}" /><br/>
+        <input id="content" type="text" name="content" placeholder="内容" value="{{content}}" /><br/>
+
+        <select id="authorId" name="authorId" form="blogform" value="{{authorId}}">
+            {% for author in authors %}
+                <option value="{{author.id}}">{{author.name}}</option>
+            {% endfor %}
+        </select><br/>
+        <button type="reset">重置</button>
+        <button type="submit">提交</button>
+    </form>
+    <label style="color: red;">{{message}}</label>
+    <script>
+        //判断字符是否为空的方法
+        function isEmpty(obj){
+            if(typeof obj == "undefined" || obj == null || obj == "" || obj.trim() == ""){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        function onSubmitAction() {
+            var title = document.getElementById("title").value;
+            var content = document.getElementById("content").value;
+            var authorId = document.getElementById("authorId").value;
+            if(isEmpty(title)){
+                alert("标题不能为空");
+                return false;
+            }else if (isEmpty(content)) {
+                alert("内容不能为空");
+                return false;
+            }else if (isEmpty(authorId)) {
+                alert("作者不能为空");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

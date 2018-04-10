@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+</head>
+<body>
+    <h1>这是一个html页面</h1>
+    <a href="{%url 'pools:index'%}">资讯</a>
+    <script>
+        $(document).ready(function(){
+            $.ajax({url:"http://127.0.0.1:8000/pools",success:function(result){
+                alert(result);
+            }});
+        });
+    </script>
+</body>
+</html>

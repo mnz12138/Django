@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+</head>
+<body>
+    <button type="button" onclick="toAddAction();">新增</button>
+    <div id="app">
+        <table>
+            <tr>
+                <th>标题</th>
+                <th>内容</th>
+                <th>访问量</th>
+                <th>日期</th>
+                <th>作者</th>
+                <th>操作</th>
+            </tr>
+            {% for blog in blogs %}
+                <tr align='center'>
+                    <td><a href="blog/{{blog.id}}">{{blog.title}}</a></td>
+                    <td>{{blog.content}}</td>
+                    <td>{{blog.counter}}</td>
+                    <td>{{blog.pubData}}</td>
+                    <td>{{blog.author.name}}</td>
+                    <td><button type="button" onclick="editAction('{{blog.id}}')">修改</button> <button type="button" onclick="deleteAction('{{blog.id}}')">删除</button></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <script>
+        function toAddAction() {
+            window.location.href = "/toAddBlog";
+        }
+        function editAction(blogId) {
+            window.location.href = "/toUpdateBlog/"+blogId;
+        }
+        function deleteAction(blogId) {
+            var r=confirm("确认删除?")
+            if (r==true){
+                $.get("http://127.0.0.1:8000/deleteBlog/"+blogId, function(data, status){
+                    alert(data["message"]);
+                    if (data["code"]==200) {
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

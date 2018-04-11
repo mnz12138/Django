@@ -26,6 +26,14 @@ python manage.py shell
 python manage.py startapp blog
 ```
 
+#### 迁移数据库
+`settings.py`设置数据库连接
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
 #### 查看所有命令
 
 ```

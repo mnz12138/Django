@@ -12,6 +12,7 @@ urlpatterns = [
     path('deleteBlog/<int:blogId>', views.deleteBlog, name='deleteBlog'),
     path('toUpdateBlog/<int:blogId>', views.toUpdateBlog, name='toUpdateBlog'),
     path('updateBlog', views.updateBlog, name='updateBlog'),
+    path('json', views.json, name='json'),
     path('getJSON', views.getJSON, name='getJSON'),
 ]
 

@@ -86,6 +86,10 @@ def updateBlog(request):
         blogId = request.GET['blogId']
         return toUpdateBlog(request, blogId, "只支持POST")
 
+def json(request):
+    # return render_to_response('json.html')
+    return render(request, 'json.html', locals())
+
 def getJSON(request):
     jsonResponse = JsonResponse({"message": "测试JSON"})
     return jsonResponse

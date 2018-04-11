@@ -6,14 +6,16 @@
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
     <style>
         table,table tr th, table tr td { border:1px solid #999999; }
-        table { min-height: 25px; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}   
+        table { min-height: 25px; width: 100%; line-height: 25px; text-align: center; border-collapse: collapse; padding:2px;}   
         table tr { align-items: center; }
-        table tr td {max-width: 200px; padding-left: 20px; padding-right: 40px;}
+        table tr td { padding-left: 20px; padding-right: 40px;}
+        .greenBtn {padding: 5px 10px; background-color: green; color: white;}
+        .redBtn {padding: 5px 10px; background-color: red; color: white;}
     </style>
 </head>
 <body>
     <div id="app">
-        <button type="button" onclick="toAddAction();">新增</button><br/><br/>     
+        <button class="greenBtn" type="button" onclick="toAddAction();">新增</button><br/><br/>     
         <table>
             <tr>
                 <th>标题</th>
@@ -30,7 +32,7 @@
                     <td>{{blog.counter}}</td>
                     <td>{{blog.pubData}}</td>
                     <td>{{blog.author.name}}</td>
-                    <td><button type="button" onclick="editAction('{{blog.id}}')">修改</button> <button type="button" onclick="deleteAction('{{blog.id}}')">删除</button></td>
+                    <td><button class="greenBtn" type="button" onclick="editAction('{{blog.id}}')">修改</button> <button class="redBtn" type="button" onclick="deleteAction('{{blog.id}}')">删除</button></td>
                 </tr>
             {% endfor %}
         </table>

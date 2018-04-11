@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p v-html="message"></p>
+        <button type="button" @click="loadData">刷新</button>
+    </div>
+    <script>
+        var vmm = new Vue({
+            el: '#app',
+            data: {
+                message: '正在加载...'
+            },
+            methods: {
+                showData: function() {
+                    axios.get('http://127.0.0.1:8000/getJSON')
+                    .then(function(response){
+                        vmm.message = response.data
+                    }).catch(function(error){
+                        alert(error);
+                    });
+                }
+            }
+        })
+        function loadData() {
+            vmm.message = '正在刷新...';
+            setTimeout(function(){vmm.showData()},1000);
+        }
+        loadData();
+        // https://www.sojson.com/open/api/weather/json.shtml?city=%E5%8C%97%E4%BA%AC
+    </script>
+</body>
+</html>

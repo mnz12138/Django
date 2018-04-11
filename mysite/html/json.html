@@ -90,7 +90,7 @@
         // 全局组件注册
         Vue.component('component1', {
             props: ['message'],
-            // slot内容只有在<component1></component1>不包含子元素是显示
+            // <slot>标签的内容只有在<component1>不包含子标签才显示，否则<slot>标签显示<component1>标签的子标签
             template: '<h3><label v-html="message"></label>自定义全局组件!<slot>只有在没有要分发的内容时才会显示。</slot></h3>'
         })
         Vue.component('todo-item', {

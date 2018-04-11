@@ -11,6 +11,13 @@
 <body>
     <div id="app">
         <p v-html="message"></p>
+        <ul>
+            <li v-for="(value, key, index) in message">
+                <label v-html="index"></label>
+                <label v-html="key"></label>
+                <label v-html="value"></label>
+            </li>
+        </ul>
         <button type="button" @click="loadData">刷新</button>
     </div>
     <script>
@@ -23,7 +30,7 @@
                 showData: function() {
                     axios.get('http://127.0.0.1:8000/getJSON')
                     .then(function(response){
-                        vmm.message = response.data
+                        vmm.message = response
                     }).catch(function(error){
                         alert(error);
                     });

@@ -7,6 +7,13 @@
     <title>Document</title>
     <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        .active {
+            width: 100px;
+            height: 100px;
+            background: green;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -23,8 +30,75 @@
         <p id="info"></p>
         <button type="button" @click="loadData">刷新</button>
         <p v-html="site"></p>
+        <div v-bind:class="{ active: isActive }"></div>
+        <!-- 在 "change" 而不是 "input" 事件中更新 -->
+        <input v-model.lazy.trim="msg" >
+        <p v-html="msg"></p>
+        <!-- Prop -->
+        <input v-model="parentMsg"/>
+        <component1 v-bind:message="parentMsg"></component1>
+        <component2 v-bind:message="parentMsg"></component2>
+        <ol>
+            <todo-item v-for="item in sites" v-bind:todo="item"></todo-item>
+        </ol>
+        <example num="100" propB="propB" msg="abc" object="{a:'a'}" cust="1"></example>
+        <p>页面载入时，input 元素自动获取焦点：</p>
+        <input v-focus/>
     </div>
     <script>
+        // 全局组件注册
+        Vue.component('component1', {
+            props: ['message'],
+            template: '<h3><label v-html="message"></label>自定义全局组件!</h3>'
+        })
+        Vue.component('todo-item', {
+            props: ['todo'],
+            template: '<li><label v-html="todo.text"></label></li>'
+        })
+        // Prop验证
+        Vue.component('example', {
+            props: {
+                // 基础类型检测 （`null` 意思是任何类型都可以）
+                num: Number,
+                // 多种类型
+                propB: [String, Number],
+                // 必传且是字符串
+                msg: {
+                    type: String,
+                    required: true
+                },
+                // 数字，有默认值
+                num1: {
+                    type: Number,
+                    default: 100
+                },
+                // 数组／对象的默认值应当由一个工厂函数返回
+                object: {
+                    type: Object,
+                    default: function () {
+                        return { message: 'hello' }
+                    }
+                },
+                // 自定义验证函数
+                cust: {
+                    validator: function (value) {
+                        return value > 10
+                    }
+                }
+            },
+            template: '<div>验证Prop\
+                <p v-html="num"></p>\
+                <p v-html="propB"></p>\
+                <p v-html="msg"></p>\
+                <p v-html="num1"></p>\
+                <p v-html="object"></p>\
+                <p v-html="cust"></p>\
+                </div>'
+        })
+        var Child = {
+            props: ['message'],
+            template: '<h3><label v-html="message"></label>自定义局部组件!</h3>'
+        }
         var vmm = new Vue({
             el: '#app',
             data: {
@@ -33,6 +107,28 @@
                 url: 'http://www.google.com',
                 kilometers: 0,
                 meters: 0,
+                isActive: true,
+                msg: 'runoob',
+                parentMsg: '',
+                sites: [
+                    { text: 'Runoob' },
+                    { text: 'Google' },
+                    { text: 'Taobao' }
+                ],
+                propA: 123
+            },
+            directives: {
+                // 注册一个局部的自定义指令 v-focus
+                focus: {
+                    // 指令的定义
+                    inserted: function (el) {
+                        // 聚焦元素
+                        el.focus()
+                    }
+                }
+            },
+            components: {
+                'component2': Child,
             },
             computed:{
                 //计算性属性

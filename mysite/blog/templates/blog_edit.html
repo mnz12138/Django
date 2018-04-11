@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>编辑</title>
 </head>
 <body>
-    <button type="button" onclick="window.location.href = '/';">返回</button>
+    <button type="button" onclick="window.location.href = '/';">返回</button><br/><br/>
     <form action="http://127.0.0.1:8000/updateBlog" onsubmit="return onSubmitAction()" id="blogform" method="POST">
         {% csrf_token %}
         <input id="blogId" hidden="hidden" type="text" name="blogId" value="{{blog.id}}" />

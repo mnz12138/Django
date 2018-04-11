@@ -2,6 +2,8 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.csrf import csrf_exempt
 from blog.models import Blog, Author
 
 # Create your views here.
@@ -16,11 +18,18 @@ def showBlog(request, blogId):
     return HttpResponse(html)
 
 def showBlogList(request):
-    t = loader.get_template('blog_list.html')
-    blogs = Blog.objects.all()
-    context = {'blogs': blogs}
-    html = t.render(context)
-    return HttpResponse(html)
+    page = request.GET.get('page')
+    blog_list = Blog.objects.all()
+    paginator = Paginator(blog_list, 2) # Show 25 contacts per page
+    try:
+        blogs = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        blogs = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        blogs = paginator.page(paginator.num_pages)
+    return render(request, "blog_list.html", {'blogs': blogs})
 
 def toAddBlog(request, message=""):
     authors = Author.objects.all()
@@ -57,6 +66,9 @@ def toUpdateBlog(request, blogId, message=""):
     blog = Blog.objects.get(id=blogId)
     return render(request, "blog_edit.html", {"authors": authors, "blog":blog, "message":message})
 
+# 接受from表单提交的token
+# {% csrf_token %}会自动生成<input type='hidden' name='csrfmiddlewaretoken' value='64JUYFk9D2YTdd1MIC4UCB4cU3rKfKxp86IjPHd5acR9d0kWjqbm0HFerN9uGX3I' />
+@csrf_exempt
 def updateBlog(request):
     if request.method == 'POST':
         blogId = request.POST['blogId']

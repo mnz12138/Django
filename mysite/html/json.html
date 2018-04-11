@@ -10,6 +10,7 @@
 </head>
 <body>
     <div id="app">
+        <p v-html="site"></p>
         <p v-html="message"></p>
         <ul>
             <li v-for="(value, key, index) in message">
@@ -24,7 +25,29 @@
         var vmm = new Vue({
             el: '#app',
             data: {
-                message: '正在加载...'
+                message: '正在加载...',
+                name: 'Google',
+                url: 'http://www.google.com',
+            },
+            computed:{
+                //计算性属性
+                site: {
+                    // getter
+                    get: function () {
+                        return this.name + ' ' + this.url
+                    },
+                    // setter
+                    set: function (newValue) {
+                        var names = newValue.split(' ')
+                        this.name = names[0]
+                        this.url = names[names.length - 1]
+                    }
+                },
+                // 计算属性的 getter
+                reversedMessage: function () {
+                    // `this` 指向 vm 实例
+                    return this.message.split('').reverse().join('')
+                }
             },
             methods: {
                 showData: function() {
@@ -42,6 +65,11 @@
             setTimeout(function(){vmm.showData()},1000);
         }
         loadData();
+        // 调用 setter， vm.name 和 vm.url 也会被对应更新
+        vmm.site = '百度一下 http://www.baidu.com';
+        document.write('name: ' + vm.name);
+        document.write('<br>');
+        document.write('url: ' + vm.url);
         // https://www.sojson.com/open/api/weather/json.shtml?city=%E5%8C%97%E4%BA%AC
     </script>
 </body>

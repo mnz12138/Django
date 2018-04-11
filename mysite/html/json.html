@@ -37,7 +37,7 @@
         <p v-html="msg"></p>
         <!-- Prop -->
         <input v-model="parentMsg"/>
-        <component1 v-bind:message="parentMsg"></component1>
+        <component1 v-bind:message="parentMsg">123</component1>
         <component2 v-bind:message="parentMsg"></component2>
         <ol>
             <todo-item v-for="item in sites" v-bind:todo="item"></todo-item>
@@ -90,7 +90,8 @@
         // 全局组件注册
         Vue.component('component1', {
             props: ['message'],
-            template: '<h3><label v-html="message"></label>自定义全局组件!</h3>'
+            // slot内容只有在<component1></component1>不包含子元素是显示
+            template: '<h3><label v-html="message"></label>自定义全局组件!<slot>只有在没有要分发的内容时才会显示。</slot></h3>'
         })
         Vue.component('todo-item', {
             props: ['todo'],

@@ -14,5 +14,6 @@ urlpatterns = [
     path('updateBlog', views.updateBlog, name='updateBlog'),
     path('json', views.json, name='json'),
     path('getJSON', views.getJSON, name='getJSON'),
+    path('getAllJSON', views.getAllJSON, name='getAllJSON'),
 ]
 

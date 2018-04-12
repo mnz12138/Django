@@ -6,6 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
 from blog.models import Blog, Author
+from django.forms.models import model_to_dict
 
 # Create your views here.
 
@@ -39,9 +40,6 @@ def toAddBlog(request, message=""):
 
 @csrf_exempt
 def addBlog(request):
-    # cursor = connection.cursor()
-    # sql = "update api_project set " + field + "='" + newValue + "' where id=" + str(id)
-    # cursor.execute(sql)
     if request.method == 'POST':
         title = request.POST['title']
         subTitle = request.POST['subTitle']
@@ -107,3 +105,31 @@ def json(request):
 def getJSON(request):
     jsonResponse = JsonResponse({"message": "测试JSON"})
     return jsonResponse
+
+def getAllJSON(request):
+    # Manager.raw(raw_query, params=None, translations=None)
+    # cursor = connection.cursor()
+    # sql = "select * from blog_blog"
+    # cursor.execute(sql)
+    # # tuple(元祖)
+    # blogs = cursor.fetchall()
+    # return JsonResponse({"blogs": blogs})
+
+    # blogs = Blog.objects.raw("select * from blog_blog")
+    # datas = []
+    # for blog in blogs:
+    #     dict = {"title": blog.title}
+    #     datas.append(dict)
+
+    blogs = Blog.objects.all() #.values('title','subTitle','content','counter','pubData','author__name')
+    datas = []
+    print(type(blogs))
+    for blog in blogs:
+        # 自定义key
+        # blog['authorName'] = blog.pop('author__name')
+        blogDict = model_to_dict(blog)
+        blogDict['author_name'] = blog.author.name
+        blogDict.pop('author')
+        datas.append(blogDict)
+
+    return HttpResponse(datas)

@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>添加</title>
+    <style>
+        .greenBtn {padding: 5px 10px; background-color: green; color: white;}
+        .redBtn {padding: 5px 10px; background-color: red; color: white;}
+    </style>
 </head>
 <body>
-    <button type="button" onclick="window.location.href = '/';">返回</button>
+    <button class="greenBtn" type="button" onclick="window.location.href = '/';">返回</button><br/><br/>
     <form action="http://127.0.0.1:8000/addBlog" onsubmit="return onSubmitAction()" id="blogform" method="POST">
         {% csrf_token %}
-        <input id="title" type="text" name="title" placeholder="标题" value="{{title}}" /><br/>
-        <input id="content" type="text" name="content" placeholder="内容" value="{{content}}" /><br/>
-
+        <input style="min-width: 300px;" id="title" type="text" name="title" placeholder="标题" value="{{title}}" /><br/>
+        <input style="min-width: 300px;" id="subTitle" type="text" name="subTitle" placeholder="子标题" value="{{subTitle}}" /><br/>
+        <textarea style="min-width: 300px; min-height: 100px;" id="content" type="text" name="content" placeholder="内容">{{content}}</textarea><br/>
         <select id="authorId" name="authorId" form="blogform" value="{{authorId}}">
             {% for author in authors %}
                 <option value="{{author.id}}">{{author.name}}</option>
             {% endfor %}
-        </select><br/>
-        <button type="reset">重置</button>
-        <button type="submit">提交</button>
+        </select><br/><br/>
+        <button class="redBtn" type="reset">重置</button>
+        <button class="greenBtn" type="submit">提交</button>
     </form>
     <label style="color: red;">{{message}}</label>
     <script>

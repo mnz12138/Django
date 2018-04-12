@@ -10,6 +10,7 @@ class Author(models.Model):
 
 class Blog(models.Model):
     title = models.CharField(max_length=50)
+    subTitle = models.CharField(max_length=200, null=True)
     content = models.TextField()
     counter = models.IntegerField(default=0)
     pubData = models.DateField(auto_now_add=True)

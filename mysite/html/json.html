@@ -204,7 +204,9 @@
             },
             methods: {
                 showData: function() {
-                    axios.get('http://127.0.0.1:8000/getJSON')
+                    // var url = "{% url 'blog:getJSON' %}"
+                    var url = "/getJSON"
+                    axios.get(url)
                     .then(function(response){
                         vmm.message = response
                     }).catch(function(error){

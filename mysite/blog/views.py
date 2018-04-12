@@ -4,23 +4,25 @@ from django.template import loader
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
+from django.db import connection
 from blog.models import Blog, Author
 
 # Create your views here.
 
-def showBlog(request, blogId):
+def showBlog(request, blogId, page=1):
     t = loader.get_template('blog.html')
     blog = Blog.objects.get(id=blogId)
     blog.counter+=1
     blog.save()
-    context = {'blog': blog}
+    context = {'blog': blog, 'page':page}
     html = t.render(context)
     return HttpResponse(html)
 
-def showBlogList(request):
-    page = request.GET.get('page')
+def showBlogList(request, page=0):
+    if page==0:
+        page = request.GET.get('page')
     blog_list = Blog.objects.all()
-    paginator = Paginator(blog_list, 2) # Show 25 contacts per page
+    paginator = Paginator(blog_list, 10) # Show 25 contacts per page
     try:
         blogs = paginator.page(page)
     except PageNotAnInteger:
@@ -35,15 +37,20 @@ def toAddBlog(request, message=""):
     authors = Author.objects.all()
     return render(request, "blog_add.html", {"authors": authors, "message": message})
 
+@csrf_exempt
 def addBlog(request):
+    # cursor = connection.cursor()
+    # sql = "update api_project set " + field + "='" + newValue + "' where id=" + str(id)
+    # cursor.execute(sql)
     if request.method == 'POST':
         title = request.POST['title']
+        subTitle = request.POST['subTitle']
         content = request.POST['content']
         authorId = request.POST['authorId']
-        if title=="" or content=="" or authorId=="" or authorId==0:
+        if title=="" or content=="" or subTitle=="" or authorId=="" or authorId==0:
             return toAddBlog(request, "字段缺失")
         try:
-            blog = Blog(title=title,content=content,author_id=authorId)
+            blog = Blog(title=title,subTitle=subTitle,content=content,author_id=authorId)
             blog.save()
             # 或者
             # Blog.objects.create(title=title,content=content,author_id=authorId)
@@ -54,12 +61,19 @@ def addBlog(request):
     else:
         return toAddBlog(request, "只支持POST")
 
-def deleteBlog(request, blogId):
-    try:
-        Blog.objects.filter(id=blogId).delete()
-        return JsonResponse({"code": 200, "message": "删除成功"})
-    except ValidationError:
-        return JsonResponse({"code": 10001, "message": "删除失败"})
+@csrf_exempt
+def deleteBlog(request):
+    if request.method == 'POST':
+        blogId = request.POST['blogId']
+        if blogId=="":
+            return JsonResponse({"code": 10003, "message": "字段缺失"})
+        try:
+            Blog.objects.filter(id=blogId).delete()
+            return JsonResponse({"code": 200, "message": "删除成功"})
+        except ValidationError:
+            return JsonResponse({"code": 10001, "message": "删除失败"})
+    else:
+        return JsonResponse({"code": 10002, "message": "请使用POST请求"})
 
 def toUpdateBlog(request, blogId, message=""):
     authors = Author.objects.all()
@@ -73,12 +87,13 @@ def updateBlog(request):
     if request.method == 'POST':
         blogId = request.POST['blogId']
         title = request.POST['title']
+        subTitle = request.POST['subTitle']
         content = request.POST['content']
         authorId = request.POST['authorId']
-        if title=="" or content=="" or authorId=="" or authorId==0:
+        if title=="" or content=="" or subTitle=="" or authorId=="" or authorId==0:
             return toUpdateBlog(request, blogId, "字段缺失")
         try:
-            Blog.objects.filter(id=blogId).update(title=title,content=content,author_id=authorId)
+            Blog.objects.filter(id=blogId).update(title=title,subTitle=subTitle,content=content,author_id=authorId)
             return HttpResponseRedirect('/')
         except ValidationError:
             return JsonResponse({"code": 10002, "message": "更新失败"})

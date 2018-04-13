@@ -132,4 +132,8 @@ def getAllJSON(request):
         blogDict.pop('author')
         datas.append(blogDict)
 
-    return HttpResponse(datas)
+    import json
+    # separators指定分隔符
+    json = json.dumps(datas, separators=(',', ':'), ensure_ascii=False)
+
+    return HttpResponse(json)

@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>博客</title>
+    <style>
+        .greenBtn {padding: 5px 10px; background-color: green; color: white;}
+    </style>
 </head>
 <body>
-    <button type="button" onclick="window.location.href = '/?page={{page}}';">返回</button>
+    <button type="button" class="greenBtn" onclick="window.location.href = '/?page={{page}}';">首页</button>
     <div class="col-md-9">
         <h2>{{blog.title}}</h2>
         <h4>{{blog.subTitle}}</h4>

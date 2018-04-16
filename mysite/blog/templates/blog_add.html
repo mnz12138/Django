@@ -9,7 +9,7 @@
     </style>
 </head>
 <body>
-    <button class="greenBtn" type="button" onclick="window.location.href = '/';">返回</button><br/><br/>
+    <button class="greenBtn" type="button" onclick="window.location.href = '/';">首页</button><br/><br/>
     <form action="http://127.0.0.1:8000/addBlog" onsubmit="return onSubmitAction()" id="blogform" method="POST">
         {% csrf_token %}
         <input style="min-width: 300px;" id="title" type="text" name="title" placeholder="标题" value="{{title}}" /><br/>

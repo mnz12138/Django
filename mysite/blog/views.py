@@ -10,29 +10,17 @@ from django.forms.models import model_to_dict
 
 # Create your views here.
 
-def showBlog(request, blogId, page=1):
+def showBlog(request, blogId):
     t = loader.get_template('blog.html')
     blog = Blog.objects.get(id=blogId)
     blog.counter+=1
     blog.save()
-    context = {'blog': blog, 'page':page}
+    context = {'blog': blog}
     html = t.render(context)
     return HttpResponse(html)
 
-def showBlogList(request, page=0):
-    if page==0:
-        page = request.GET.get('page')
-    blog_list = Blog.objects.order_by('-pubDate')
-    paginator = Paginator(blog_list, 10) # Show 25 contacts per page
-    try:
-        blogs = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        blogs = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        blogs = paginator.page(paginator.num_pages)
-    return render(request, "blog_list.html", {'blogs': blogs})
+def showBlogList(request):
+    return render(request, "blog_list.html")
 
 def toAddBlog(request, message=""):
     authors = Author.objects.all()
@@ -101,39 +89,3 @@ def updateBlog(request):
 
 def json(request):
     return render_to_response('json.html')
-
-def getJSON(request):
-    jsonResponse = JsonResponse({"message": "测试JSON"})
-    return jsonResponse
-
-def getAllJSON(request):
-    # Manager.raw(raw_query, params=None, translations=None)
-    # cursor = connection.cursor()
-    # sql = "select * from blog_blog"
-    # cursor.execute(sql)
-    # # tuple(元祖)
-    # blogs = cursor.fetchall()
-    # return JsonResponse({"blogs": blogs})
-
-    # blogs = Blog.objects.raw("select * from blog_blog")
-    # datas = []
-    # for blog in blogs:
-    #     dict = {"title": blog.title}
-    #     datas.append(dict)
-
-    blogs = Blog.objects.all() #.values('title','subTitle','content','counter','pubDate','author__name')
-    datas = []
-    print(type(blogs))
-    for blog in blogs:
-        # 自定义key
-        # blog['authorName'] = blog.pop('author__name')
-        blogDict = model_to_dict(blog)
-        blogDict['author_name'] = blog.author.name
-        blogDict.pop('author')
-        datas.append(blogDict)
-
-    import json
-    # separators指定分隔符
-    json = json.dumps(datas, separators=(',', ':'), ensure_ascii=False)
-
-    return HttpResponse(json)

@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
+from django.db.models import Q
 from blog.models import Blog, Author
 from django.forms.models import model_to_dict
 
@@ -11,20 +12,23 @@ def formatPageJson(data=[], total=0):
     # import json
     # json = json.dumps(data, separators=(',', ':'), ensure_ascii=False)
     # print(json)
+    print(len(data))
     try:
         return JsonResponse({"status": 200, "message": "调用成功", "total": total, "rows": data})
     except ValidationError:
         return JsonResponse({"status": 1001, "message": "调用失败", "total": total, "rows": data})
 
-def getBlogList(request, offset=0, limit=10):
+def getBlogList(request, offset=0, limit=10, search=''):
+    print(str(request.GET))
     if request.method == 'GET':
         offset = int(request.GET['offset'])
         limit = int(request.GET['limit'])
+        search = str(request.GET['search'])
     if limit > 20:
         limit = 20
     page = int(offset/limit)+1
-    print(str(offset)+'-'+str(limit)+' page:'+str(page))
-    blog_list = Blog.objects.order_by('-pubDate')
+    print(str(offset)+'-'+str(limit)+' page:'+str(page)+' search:'+search)
+    blog_list = Blog.objects.filter(Q(title__contains=search) | Q(subTitle__contains=search)).order_by('-pubDate')
     paginator = Paginator(blog_list, limit) # Show 25 contacts per page
     try:
         blogs = paginator.page(page)

@@ -9,6 +9,8 @@ from blog.models import Blog, Author
 from django.forms.models import model_to_dict
 
 # Create your views here.
+def login(request):
+    return render(request, "login.html")
 
 def showBlog(request, blogId):
     t = loader.get_template('blog.html')

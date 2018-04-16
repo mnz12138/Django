@@ -18,6 +18,9 @@ def formatPageJson(data=[], total=0):
     except ValidationError:
         return JsonResponse({"status": 1001, "message": "调用失败", "total": total, "rows": data})
 
+def loginVerify(request):
+    return HttpResponse('')
+
 def getBlogList(request, offset=0, limit=10, search=''):
     print(str(request.GET))
     if request.method == 'GET':

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'custom.css' %}">
+</head>
+<body>
+    <div>
+        <form action="{% url 'blog:loginVerify' %}" onsubmit="return onSubmitAction()" id="blogform" method="POST">
+            {% csrf_token %}
+            <input id="username" name="username" placeholder="用户名" type="text"/><br>
+            <input id="password" name="password" placeholder="密码" type="password"/><br><br>
+            <button class="redBtn" type="reset">重置</button>
+            <button class="greenBtn" type="submit">提交</button>
+        </form>
+    </div>
+    <script src="{% static 'blog/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'custom.js' %}"></script>
+    <script>
+        function onSubmitAction() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            if(isEmpty(username)){
+                alert("标题不能为空");
+                return false;
+            }else if (isEmpty(password)) {
+                alert("内容不能为空");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

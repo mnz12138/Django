@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>博客</title>
-    <style>
-        .greenBtn {padding: 5px 10px; background-color: green; color: white;}
-    </style>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'custom.css' %}">
 </head>
 <body>
     <button type="button" class="greenBtn" onclick="window.location.href = '/?page={{page}}';">首页</button>

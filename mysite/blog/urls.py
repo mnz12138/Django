@@ -6,7 +6,8 @@ from . import apis
 app_name = 'blog'
 
 urlpatterns = [
-    path('', views.showBlogList, name='showBlogList'),
+    path('', views.login, name='login'),
+    path('showBlogList', views.showBlogList, name='showBlogList'),
     path('blog/<int:blogId>', views.showBlog, name='showBlog'),
     path('toAddBlog', views.toAddBlog, name='toAddBlog'),
     path('addBlog', views.addBlog, name='addBlog'),
@@ -19,5 +20,6 @@ urlpatterns = [
     path('getAllJSON', apis.getAllJSON, name='getAllJSON'),
 
     path('getBlogList', apis.getBlogList, name='getBlogList'),
+    path('loginVerify', apis.loginVerify, name='loginVerify')
 ]
 

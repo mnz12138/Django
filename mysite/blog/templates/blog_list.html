@@ -8,11 +8,8 @@
     <!-- 包含 bootstrap 样式表 -->
     <link rel="stylesheet" href="https://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'blog/bootstrap/bootstrap-table.css' %}">
-    <style>
-        .greenBtn {padding: 5px 10px; background-color: green; color: white;}
-        .redBtn {padding: 5px 10px; background-color: red; color: white;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/bootstrap-table.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'custom.css' %}">
 </head>
 <body>
     <div id="app">
@@ -23,11 +20,12 @@
         </table>
     </div>
     <!-- JavaScript 放置在文档最后面可以使页面加载速度更快 -->
-    <script src="{% static 'blog/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'jquery-3.3.1.min.js' %}"></script>
     <!-- 可选: 合并了 Bootstrap JavaScript 插件 -->
     <script src="https://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="{% static 'blog/bootstrap/bootstrap-table.js' %}"></script>
-    <script src="{% static 'blog/bootstrap/locale/bootstrap-table-zh-CN.js' %}"></script>
+    <script src="{% static 'custom.js' %}"></script>
+    <script src="{% static 'bootstrap/bootstrap-table.js' %}"></script>
+    <script src="{% static 'bootstrap/locale/bootstrap-table-zh-CN.js' %}"></script>
     <!-- <script src="{% static 'blog/bootstrap/extensions/editable/bootstrap-table-editable.js' %}"></script> -->
     <script>
         // $.fn.editable.defaults.mode = 'inline';

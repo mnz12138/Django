@@ -22,7 +22,7 @@ def showBlog(request, blogId, page=1):
 def showBlogList(request, page=0):
     if page==0:
         page = request.GET.get('page')
-    blog_list = Blog.objects.all()
+    blog_list = Blog.objects.order_by('-pubDate')
     paginator = Paginator(blog_list, 10) # Show 25 contacts per page
     try:
         blogs = paginator.page(page)
@@ -121,7 +121,7 @@ def getAllJSON(request):
     #     dict = {"title": blog.title}
     #     datas.append(dict)
 
-    blogs = Blog.objects.all() #.values('title','subTitle','content','counter','pubData','author__name')
+    blogs = Blog.objects.all() #.values('title','subTitle','content','counter','pubDate','author__name')
     datas = []
     print(type(blogs))
     for blog in blogs:

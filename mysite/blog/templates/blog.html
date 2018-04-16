@@ -9,7 +9,8 @@
     <div class="col-md-9">
         <h2>{{blog.title}}</h2>
         <h4>{{blog.subTitle}}</h4>
-        作者：{{blog.author.name}}
+        作者：{{blog.author.name}}<br/>
+        日期：{{blog.pubDate|date:"Y-m-d"}}
         <br/>
         <pre>{{blog.content}}</pre>
     </div>

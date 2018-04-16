@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
 from django.db.models import Q
-from blog.models import Blog, Author
+from blog.models import Blog, Author, User
 from django.forms.models import model_to_dict
 
 def formatPageJson(data=[], total=0):
@@ -18,8 +18,31 @@ def formatPageJson(data=[], total=0):
     except ValidationError:
         return JsonResponse({"status": 1001, "message": "调用失败", "total": total, "rows": data})
 
+def formatJson(result, success=True):
+    try:
+        if success:
+            return JsonResponse({"status": 200, "message": "调用成功", "result": result})
+        else:
+            return JsonResponse({"status": 1002, "message": "调用失败", "result": result})
+    except ValidationError:
+        return JsonResponse({"status": 1001, "message": "调用失败", "result": result})
+
+def formatMessageJson(success=True, status=200, message="调用成功"):
+    if success:
+        return JsonResponse({"status": status, "message": message})
+    else:
+        return JsonResponse({"status": status, "message": message})
+
 def loginVerify(request):
-    return HttpResponse('')
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = User.objects.filter(username=username, password=password)
+        if user:
+            return formatJson({"token": "token"}, success=True)
+        else:
+            return formatMessageJson(success=False, status=1003, message="用户名或密码错误")
+    return formatMessageJson(success=False, message="请使用POST提交请求")
 
 def getBlogList(request, offset=0, limit=10, search=''):
     print(str(request.GET))

@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'custom.css' %}">
 </head>
 <body>
-    <button class="greenBtn" type="button" onclick="window.location.href = '/';">首页</button><br/><br/>
+    <button class="greenBtn" type="button" onclick="window.location.href = 'showBlogList';">首页</button><br/><br/>
     <form action="http://127.0.0.1:8000/updateBlog" onsubmit="return onSubmitAction()" id="blogform" method="POST">
         {% csrf_token %}
         <input id="blogId" hidden="hidden" type="text" name="blogId" value="{{blog.id}}" />

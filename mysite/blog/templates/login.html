@@ -10,7 +10,7 @@
 </head>
 <body>
     <div>
-        <form action="{% url 'blog:loginVerify' %}" onsubmit="return onSubmitAction()" id="blogform" method="POST">
+        <form id="form" action="{% url 'blog:login' %}" onsubmit="return onSubmitAction()" id="blogform" method="POST">
             {% csrf_token %}
             <input id="username" name="username" placeholder="用户名" type="text"/><br>
             <input id="password" name="password" placeholder="密码" type="password"/><br><br>
@@ -18,9 +18,17 @@
             <button class="greenBtn" type="submit">提交</button>
         </form>
     </div>
-    <script src="{% static 'blog/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'jquery.form.js' %}"></script>
     <script src="{% static 'custom.js' %}"></script>
     <script>
+        /** 验证文件是否导入成功  */  
+        $("#form").ajaxForm(function(data){
+            alert(data.message);
+            if(data.status==200){
+                window.location.href = '/showBlogList';
+            }
+        }); 
         function onSubmitAction() {
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;

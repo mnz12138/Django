@@ -1,3 +1,4 @@
+from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from django.core.exceptions import ValidationError
@@ -5,8 +6,42 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
 from django.db.models import Q
-from blog.models import Blog, Author, User
+from blog.models import Blog, Author
 from django.forms.models import model_to_dict
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth.models import User 
+from django.contrib import auth
+from django.contrib import messages
+from django.template.context import RequestContext 
+
+from .forms import LoginForm
+
+def register(request):
+    user = User.objects.create_user(username='admin',password='123456')
+    if user is not None:
+        return formatMessageJson(success=True, status=200, message="注册成功")
+    else:
+        return formatMessageJson(success=False, status=1004, message="注册失败")
+
+def login(request):
+    print('-----login')
+    if request.method == 'GET':
+        return formatMessageJson(success=False, message="请使用POST提交请求")
+    else:
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
+        user = auth.authenticate(username=username,password=password)
+        if user is not None and user.is_active:
+            auth.login(request,user)
+            return formatMessageJson(success=True, status=200, message="登录成功")
+        else:
+            return formatMessageJson(success=False, status=1003, message="用户名或密码错误")
+
+def logout(request):
+    print('-----logout')
+    auth.logout(request)
+    return formatMessageJson(success=True, status=200, message="退出登录成功")
 
 def formatPageJson(data=[], total=0):
     # import json
@@ -39,7 +74,8 @@ def loginVerify(request):
         password = request.POST['password']
         user = User.objects.filter(username=username, password=password)
         if user:
-            return formatJson({"token": "token"}, success=True)
+            request.session['username'] =  username
+            return formatMessageJson(success=True, status=200, message="登录成功")
         else:
             return formatMessageJson(success=False, status=1003, message="用户名或密码错误")
     return formatMessageJson(success=False, message="请使用POST提交请求")
@@ -47,9 +83,12 @@ def loginVerify(request):
 def getBlogList(request, offset=0, limit=10, search=''):
     print(str(request.GET))
     if request.method == 'GET':
-        offset = int(request.GET['offset'])
-        limit = int(request.GET['limit'])
-        search = str(request.GET['search'])
+        if 'offset' in request.GET.keys():
+            offset = int(request.GET['offset'])
+        if 'limit' in request.GET.keys():
+            limit = int(request.GET['limit'])
+        if 'search' in request.GET.keys():
+            search = str(request.GET['search'])
     if limit > 20:
         limit = 20
     page = int(offset/limit)+1

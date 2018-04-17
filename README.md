@@ -52,3 +52,7 @@ python manage.py
 服务器返回json数据必须包含data节点（展示数据）
 
 > 当数据量较少，只有上千条数据时，一次性将所有数据返回给客户端，无论点下一页，或搜索条件时，不向服务端发请求，实现全文检索。
+
+#### 安装
+
+`pip install django-bootstrap-toolkit`

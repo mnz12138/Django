@@ -13,22 +13,24 @@
 </head>
 <body>
     <div id="app">
+        <div align="right"><input type="button" onclick="logout();" value="登出" class="redBtn"></div>
         <div id="toolbar">
-        <button style="padding-top: 0px; padding-bottom: 0px;" class="greenBtn" type="button" onclick="toAddAction();">新增</button><br/>    
+            <button style="padding-top: 0px; padding-bottom: 0px;" class="greenBtn" type="button" onclick="toAddAction();">新增</button><br/>    
         </div>
         <table id="table" class="table table-striped table-bordered table-hover table-condensed" style="min-width: 1280px;">
         </table>
     </div>
     <!-- JavaScript 放置在文档最后面可以使页面加载速度更快 -->
+    <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script> -->
     <script src="{% static 'jquery-3.3.1.min.js' %}"></script>
     <!-- 可选: 合并了 Bootstrap JavaScript 插件 -->
     <script src="https://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="{% static 'custom.js' %}"></script>
     <script src="{% static 'bootstrap/bootstrap-table.js' %}"></script>
     <script src="{% static 'bootstrap/locale/bootstrap-table-zh-CN.js' %}"></script>
-    <!-- <script src="{% static 'blog/bootstrap/extensions/editable/bootstrap-table-editable.js' %}"></script> -->
+    <!-- <script src="{% static 'bootstrap/extensions/editable/bootstrap-table-editable.js' %}"></script> -->
     <script>
-        // $.fn.editable.defaults.mode = 'inline';
+        // $.fn.bootstrapTable.defaults.mode = 'inline';
         $(function(){
             $('#table').bootstrapTable({
                 url: "{% url 'blog:getBlogList' %}",
@@ -57,6 +59,9 @@
                 clickToSelect: true,
                 // data_local: "zh-US",//表格汉化
                 sidePagination: "server", //分页方式：client客户端分页，server服务端分页（*）
+                // showExport: true,                    
+                // exportDataType: 'all',
+                // exportTypes:[ 'csv', 'txt', 'sql', 'doc', 'excel', 'xlsx', 'pdf'],  //导出文件类型
                 queryParams: function (params) {//自定义参数，这里的参数是传给后台的，我这是是分页用的
                     return {//这里的params是table提供的
                         offset: params.offset,//从数据库第几条记录开始  
@@ -76,7 +81,9 @@
                         type: 'text',
                         title: '名称',
                         validate: function (v) {
-                            if (!v) return '标题不能为空';
+                            if ($.trim(v) == '') {  
+                                return '标题不能为空!';  
+                            }
                         }
                     },
                     formatter: function (value, row){
@@ -91,7 +98,9 @@
                         type: 'text',
                         title: '值',
                         validate: function (v) {
-                            if (!v) return '值不能为空';
+                            if ($.trim(v) == '') {  
+                                return '子标题不能为空!';  
+                            }
                         }
                     }
                 },  {
@@ -107,8 +116,12 @@
                     title: '作者',
                     align: 'center',
                     editable: {
-                        type: 'text',
-                        title: '值',
+                        type: 'select',
+                        pk: 1,
+                        source: [
+                            {value: 1, text: '张三'},
+                            {value: 2, text: '李四'},
+                        ],
                         validate: function (v) {
                             if (!v) return '值不能为空';
                         }
@@ -121,14 +134,23 @@
                             '<button class="redBtn" type="button" onclick="deleteAction('+row.id+')">删除</button>',
                         ].join('');
                     }
-                }]
+                }],
+                
             });
         });
+        function logout() {
+            $.get("accounts/logout/", function(data, status){
+                alert(data.message);
+                if(data.status==200){
+                    window.location.href = '/';
+                }
+            });
+        }
         function toAddAction() {
             window.open("/toAddBlog");
         }
         function editAction(blogId) {
-            window.open("/toUpdateBlog/"+blogId);
+            window.open("/toUpdateBlog?blogId="+blogId);
         }
         function deleteAction(blogId) {
             var r=confirm("确认删除?")

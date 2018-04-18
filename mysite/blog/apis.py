@@ -113,6 +113,62 @@ def getBlogList(request, offset=0, limit=10, search=''):
         datas.append(blogDict)
     return formatPageJson(datas, paginator.count)
 
+@csrf_exempt
+def addBlog(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        subTitle = request.POST['subTitle']
+        content = request.POST['content']
+        authorId = request.POST['authorId']
+        if title=="" or content=="" or subTitle=="" or authorId=="" or authorId==0:
+            return toAddBlog(request, "字段缺失")
+        try:
+            blog = Blog(title=title,subTitle=subTitle,content=content,author_id=authorId)
+            blog.save()
+            # 或者
+            # Blog.objects.create(title=title,content=content,author_id=authorId)
+            # return JsonResponse({"code": 200, "message": "新增成功"})
+            return showBlogList(request)
+        except ValidationError:
+            return toAddBlog(request)
+    else:
+        return toAddBlog(request, "只支持POST")
+
+# 接受from表单提交的token
+# {% csrf_token %}会自动生成<input type='hidden' name='csrfmiddlewaretoken' value='64JUYFk9D2YTdd1MIC4UCB4cU3rKfKxp86IjPHd5acR9d0kWjqbm0HFerN9uGX3I' />
+@csrf_exempt
+def updateBlog(request):
+    if request.method == 'POST':
+        blogId = request.POST['blogId']
+        title = request.POST['title']
+        subTitle = request.POST['subTitle']
+        content = request.POST['content']
+        authorId = request.POST['authorId']
+        if title=="" or content=="" or subTitle=="" or authorId=="" or authorId==0:
+            return toUpdateBlog(request, blogId, "字段缺失")
+        try:
+            Blog.objects.filter(id=blogId).update(title=title,subTitle=subTitle,content=content,author_id=authorId)
+            return showBlogList(request)
+        except ValidationError:
+            return JsonResponse({"code": 10002, "message": "更新失败"})
+    else:
+        blogId = request.GET['blogId']
+        return toUpdateBlog(request, blogId, "只支持POST")
+
+@csrf_exempt
+def deleteBlog(request):
+    if request.method == 'POST':
+        blogId = request.POST['blogId']
+        if blogId=="":
+            return JsonResponse({"code": 10003, "message": "字段缺失"})
+        try:
+            Blog.objects.filter(id=blogId).delete()
+            return JsonResponse({"code": 200, "message": "删除成功"})
+        except ValidationError:
+            return JsonResponse({"code": 10001, "message": "删除失败"})
+    else:
+        return JsonResponse({"code": 10002, "message": "请使用POST请求"})
+
 def getJSON(request):
     jsonResponse = JsonResponse({"message": "测试JSON"})
     return jsonResponse

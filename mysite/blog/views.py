@@ -1,5 +1,6 @@
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.urls import reverse
 from django.template import loader
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -10,6 +11,8 @@ from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+
+# return HttpResponseRedirect(reverse('blog:toLogin', args=(question.id,)))
 def toLogin(request):
     print('-----toLogin')
     return render(request, "login.html")

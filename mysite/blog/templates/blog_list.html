@@ -87,7 +87,7 @@
                         }
                     },
                     formatter: function (value, row){
-                        return ['<a target="_blank" href="blog/'+row.id+'">'+row.title+'</a>',
+                        return ['<a target="_blank" href="showBlog?blogId='+row.id+'">'+row.title+'</a>',
                         ].join('');
                     }
                 }, {
@@ -112,7 +112,7 @@
                     title: '日期',
                     align: 'center'
                 }, {
-                    field: 'author',
+                    field: 'author_name',
                     title: '作者',
                     align: 'center',
                     editable: {
@@ -157,7 +157,7 @@
             if (r==true){
                 $.post("{% url 'blog:deleteBlog' %}", {"blogId":blogId}, function(data, status){
                     alert(data["message"]);
-                    if (data["code"]==200) {
+                    if (data["status"]==200) {
                         window.location.reload();
                     }
                 });

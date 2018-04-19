@@ -18,14 +18,14 @@ def toLogin(request):
     return render(request, "login.html")
 
 @login_required
-def showBlog(request, blogId):
-    t = loader.get_template('blog.html')
+def showBlog(request, blogId=0):
+    if blogId is None or blogId == 0:
+        blogId = request.GET.get('blogId', 0)
+    print(blogId)
     blog = Blog.objects.get(id=blogId)
     blog.counter+=1
     blog.save()
-    context = {'blog': blog}
-    html = t.render(context)
-    return request, HttpResponse(html)
+    return render(request, "blog.html", {"blog": blog})
 
 @login_required
 def showBlogList(request):

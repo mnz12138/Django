@@ -1,6 +1,11 @@
 # Django
 Django编写Web应用程序。
 
+#### 安装Django环境
+```
+pip install Django
+```
+
 #### 启动服务
 
 ```

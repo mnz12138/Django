@@ -14,7 +14,7 @@ urlpatterns = [
 
     path('', views.toLogin, name=''),
     path('showBlogList', views.showBlogList, name='showBlogList'),
-    path('blog/<int:blogId>', views.showBlog, name='showBlog'),
+    path('showBlog', views.showBlog, name='showBlog'),
     path('toAddBlog', views.toAddBlog, name='toAddBlog'),
     path('toUpdateBlog', views.toUpdateBlog, name='toUpdateBlog'),
     path('json', views.json, name='json'),
@@ -23,6 +23,7 @@ urlpatterns = [
     path('getAllJSON', apis.getAllJSON, name='getAllJSON'),
 
     path('getBlogList', apis.getBlogList, name='getBlogList'),
+    path('getBlog', apis.getBlog, name='getBlog'),
     path('addBlog', apis.addBlog, name='addBlog'),
     path('deleteBlog', apis.deleteBlog, name='deleteBlog'),
     path('updateBlog', apis.updateBlog, name='updateBlog'),

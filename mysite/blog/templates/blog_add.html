@@ -8,12 +8,12 @@
 </head>
 <body>
     <button class="greenBtn" type="button" onclick="window.location.href = 'showBlogList';">首页</button><br/><br/>
-    <form action="{% url 'blog:addBlog' %}" onsubmit="return onSubmitAction()" id="blogform" method="POST">
+    <form id="form" action="{% url 'blog:addBlog' %}" onsubmit="return onSubmitAction()" method="POST">
         {% csrf_token %}
         <input style="min-width: 300px;" id="title" type="text" name="title" placeholder="标题" value="{{title}}" /><br/>
         <input style="min-width: 300px;" id="subTitle" type="text" name="subTitle" placeholder="子标题" value="{{subTitle}}" /><br/>
         <textarea style="min-width: 300px; min-height: 100px;" id="content" type="text" name="content" placeholder="内容">{{content}}</textarea><br/>
-        <select id="authorId" name="authorId" form="blogform" value="{{authorId}}">
+        <select id="authorId" name="authorId" form="form" value="{{authorId}}">
             {% for author in authors %}
                 <option value="{{author.id}}">{{author.name}}</option>
             {% endfor %}
@@ -22,8 +22,16 @@
         <button class="greenBtn" type="submit">提交</button>
     </form>
     <label style="color: red;">{{message}}</label>
+    <script src="{% static 'jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'jquery.form.js' %}"></script>
     <script src="{% static 'custom.js' %}"></script>
     <script>
+        $("#form").ajaxForm(function(data){
+            alert(data.message);
+            if(data.status==200){
+                window.location.href = '/showBlogList';
+            }
+        }); 
         function onSubmitAction() {
             var title = document.getElementById("title").value;
             var content = document.getElementById("content").value;

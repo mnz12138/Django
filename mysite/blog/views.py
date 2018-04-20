@@ -1,4 +1,4 @@
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.template import loader
@@ -22,7 +22,8 @@ def showBlog(request, blogId=0):
     if blogId is None or blogId == 0:
         blogId = request.GET.get('blogId', 0)
     print(blogId)
-    blog = Blog.objects.get(id=blogId)
+    # blog = Blog.objects.get(id=blogId)
+    blog = get_object_or_404(Blog, pk=blogId)
     blog.counter+=1
     blog.save()
     return render(request, "blog.html", {"blog": blog})

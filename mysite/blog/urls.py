@@ -1,7 +1,6 @@
 from django.urls import path
 
-from . import views
-from . import apis
+from . import views, apis, testViews
 
 app_name = 'blog'
 
@@ -28,6 +27,8 @@ urlpatterns = [
     path('deleteBlog', apis.deleteBlog, name='deleteBlog'),
     path('updateBlog', apis.updateBlog, name='updateBlog'),
     
-    path('loginVerify', apis.loginVerify, name='loginVerify')
+    path('loginVerify', apis.loginVerify, name='loginVerify'),
+
+    path('test', testViews.test, name='test'),
 ]
 

@@ -109,17 +109,23 @@ def getBlogList(request, offset=0, limit=10, search=''):
         # blog['authorName'] = blog.pop('author__name')
         blogDict = model_to_dict(blog)
         blogDict['pubDate'] = blog.pubDate.strftime("%Y-%m-%d %H:%M:%S")
-        blogDict['author_name'] = blog.author.name
-        blogDict.pop('author')
+        # blogDict['author'] = blog.author.name
         datas.append(blogDict)
     return formatPageJson(datas, paginator.count)
+
+def getAllAuthor(request):
+    authors = Author.objects.all()
+    datas = []
+    for author in authors:
+        datas.append(model_to_dict(author))
+    return formatJson(datas)
 
 def getBlog(request):
     if request.method == 'GET':
         blogId = request.GET.get('blogId', 0)
     blog = Blog.objects.get(id=blogId)
     blog.counter+=1
-    blog.save()
+    blog.save(['counter'])
     dict = model_to_dict(blog)
     dict['pubDate'] = blog.pubDate.strftime("%Y-%m-%d %H:%M:%S")
     return formatJson(dict)
@@ -178,6 +184,33 @@ def deleteBlog(request):
             return formatMessageJson(success=True, message="删除成功")
         except ValidationError:
             return formatMessageJson(success=False, status=10002, message="删除失败")
+    else:
+        return formatMessageJson(success=False, status=10001, message="请使用POST提交请求")
+
+@csrf_exempt
+def editBlogColumn(request):
+    if request.method == 'POST':
+        blogId = request.POST['blogId']
+        newValue = request.POST['newValue']
+        field = request.POST['field']
+        print(field+'='+newValue)
+        if blogId=="" or newValue=="" or field=="":
+            return formatMessageJson(success=False, status=10003, message="字段缺失")
+        try:
+            # blog = Blog.objects.get(id=blogId)
+            # blog[field] = newValue
+            # blog.save([field])
+            sqlDict = {"title": "update blog_blog set title = %s WHERE id = %s",
+                    "subTitle": "update blog_blog set subTitle = %s WHERE id = %s",
+                    "author": "update blog_blog set author_id = %s WHERE id = %s",}
+            sql = sqlDict.get(field, "")
+            if sql=="":
+                return formatMessageJson(success=False, status=10004, message="参数失败")
+            cursor = connection.cursor()
+            cursor.execute(sql, [newValue, blogId])
+            return formatMessageJson(success=True, message="更新成功")
+        except ValidationError:
+            return formatMessageJson(success=False, status=10002, message="更新失败")
     else:
         return formatMessageJson(success=False, status=10001, message="请使用POST提交请求")
 

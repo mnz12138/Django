@@ -8,8 +8,10 @@
     <!-- 包含 bootstrap 样式表 -->
     <link rel="stylesheet" href="https://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/bootstrap-table.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'custom.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static "custom.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "/css/bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "/css/bootstrap-editable.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "/css/bootstrap-table.css" %}">
 </head>
 <body>
     <div id="app">
@@ -22,13 +24,15 @@
     </div>
     <!-- JavaScript 放置在文档最后面可以使页面加载速度更快 -->
     <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script> -->
-    <script src="{% static 'jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static "jquery.min.js" %}"></script>
     <!-- 可选: 合并了 Bootstrap JavaScript 插件 -->
-    <script src="https://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script src="{% static 'custom.js' %}"></script>
-    <script src="{% static 'bootstrap/bootstrap-table.js' %}"></script>
-    <script src="{% static 'bootstrap/locale/bootstrap-table-zh-CN.js' %}"></script>
-    <!-- <script src="{% static 'bootstrap/extensions/editable/bootstrap-table-editable.js' %}"></script> -->
+    <!-- <script src="https://apps.bdimg.com/libs/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
+    <script src="{% static "custom.js" %}"></script>
+    <script src="{% static "/js/bootstrap.js" %}"></script>
+    <script src="{% static "/js/bootstrap-editable.js" %}"></script>
+    <script src="{% static "/js/bootstrap-table.js" %}"></script>
+    <script src="{% static "/js/bootstrap-table-zh-CN.js" %}"></script>
+    <script src="{% static "/js/bootstrap-table-editable.js" %}"></script>
     <script>
         // $.fn.bootstrapTable.defaults.mode = 'inline';
         $(function(){
@@ -68,27 +72,47 @@
                         limit: params.limit,//找多少条  
                         search: params.search,
                     };  
-                },  
+                },
+                // onClickRow: function(row){
+                    // window.open("/showBlog?blogId="+row.id);
+                // },
+                onEditableSave: function(field, row, oldValue, $el) {
+                    var post_data = {
+                        "blogId": row.id,//获得所在行指定列的值
+                        "newValue": row[field],
+                        "field": field
+                    };
+                    $.post("{% url 'blog:editBlogColumn' %}", post_data, function(data, status){
+                        if (data["status"]!=200) {
+                            alert(data["message"]);
+                            row[field] = oldValue;
+                            $table = $('#table').bootstrapTable({});
+                            $table.bootstrapTable('updateRow', {index: row.rowId, row: row});
+                        }
+                    });
+                },
                 columns: [{
                     field: 'id',
                     title: 'ID',
-                    visible: false
+                    visible: true,
+                    formatter: function (value, row){
+                        return ['<a target="_blank" href="showBlog?blogId='+row.id+'">'+value+'</a>'];
+                    }
                 }, {
                     field: 'title',
                     title: '标题',
                     width: '35%',
                     editable: {
-                        type: 'text',
-                        title: '名称',
+                        type: "text",                //编辑框的类型。支持text|textarea|select|date|checklist等
+                        title: "标题",                //编辑框的标题
+                        disabled: false,             //是否禁用编辑
+                        emptytext: "空文本",          //空值的默认文本
+                        mode: "inline",              //编辑框的模式：支持popup和inline两种模式，默认是popup
                         validate: function (v) {
-                            if ($.trim(v) == '') {  
-                                return '标题不能为空!';  
+                            if ($.trim(v) == '') {
+                                return '标题不能为空!';
                             }
                         }
-                    },
-                    formatter: function (value, row){
-                        return ['<a target="_blank" href="showBlog?blogId='+row.id+'">'+row.title+'</a>',
-                        ].join('');
                     }
                 }, {
                     field: 'subTitle',
@@ -96,7 +120,7 @@
                     width: '25%',
                     editable: {
                         type: 'text',
-                        title: '值',
+                        title: '子标题',
                         validate: function (v) {
                             if ($.trim(v) == '') {  
                                 return '子标题不能为空!';  
@@ -112,16 +136,33 @@
                     title: '日期',
                     align: 'center'
                 }, {
-                    field: 'author_name',
+                    field: 'author',
                     title: '作者',
                     align: 'center',
                     editable: {
                         type: 'select',
+                        title: '作者',
                         pk: 1,
-                        source: [
-                            {value: 1, text: '张三'},
-                            {value: 2, text: '李四'},
-                        ],
+                        // source: [
+                            // {value: 1, text: '张三'},
+                            // {value: 2, text: '李四'},
+                        // ],
+                        source: function () {
+                            var result = [];
+                            //使用ajax同步加载数据
+                            $.ajax({
+                                url: "{% url 'blog:getAllAuthor' %}",
+                                async: false,
+                                type: "get",
+                                data: {},
+                                success: function (data, status) {
+                                    $.each(data.result, function (key, value) {
+                                        result.push({ value: value.id, text: value.name });
+                                    });
+                                }
+                            });
+                            return result;
+                        },
                         validate: function (v) {
                             if (!v) return '值不能为空';
                         }

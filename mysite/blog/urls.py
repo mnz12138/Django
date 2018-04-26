@@ -26,6 +26,9 @@ urlpatterns = [
     path('addBlog', apis.addBlog, name='addBlog'),
     path('deleteBlog', apis.deleteBlog, name='deleteBlog'),
     path('updateBlog', apis.updateBlog, name='updateBlog'),
+    path('editBlogColumn', apis.editBlogColumn, name="editBlogColumn"),
+
+    path('getAllAuthor', apis.getAllAuthor, name="getAllAuthor"),
     
     path('loginVerify', apis.loginVerify, name='loginVerify'),
 

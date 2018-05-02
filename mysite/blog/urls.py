@@ -33,5 +33,6 @@ urlpatterns = [
     path('loginVerify', apis.loginVerify, name='loginVerify'),
 
     path('test', testViews.test, name='test'),
+    path('extras', testViews.extras, name='extras'),
 ]
 

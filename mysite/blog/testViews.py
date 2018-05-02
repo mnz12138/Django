@@ -13,3 +13,6 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 def test(request):
     return render_to_response('test.html')
+
+def extras(request):
+    return render_to_response('extras.html')

@@ -250,3 +250,5 @@ def getAllJSON(request):
 
     return HttpResponse(json)
 
+def getTest():
+    return "123"
